@@ -62,8 +62,7 @@ class Application(tk.Frame):
             if type(v['order']) == str and "Рахунок на оплату" in v['order']:
                 result[k] = v
 
-
-        wb = copy(rb_target)
+        wb = xlrd.open_workbook(self.target, formatting_info=True)
 
         s = wb.get_sheet(0)
 
