@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
-import xlrd, xlwt
+import xlrd
 
 
 class Application(tk.Frame):
@@ -34,7 +34,6 @@ class Application(tk.Frame):
                               command=root.destroy)
         self.quit.pack(side="bottom")
 
-
     def select_source(self):
         self.source = askopenfilename()
 
@@ -65,24 +64,28 @@ class Application(tk.Frame):
 
         wb = xlrd.open_workbook(self.target, formatting_info=True)
 
-        s = wb.get_sheet(0)
-
         new_values = {}
         for v in target.values():
-            for k,r in result.items():
+            for k, r in result.items():
                 if r['order'] == v['order'] and v['value'] and r['value'] != v['value']:
                     new_values[k] = v['value']
 
         not_equals = []
         for n, v in new_values.items():
-            not_equals.append("Для строки " + n + " новое значение в банке " + v )
+            not_equals.append(
+                "Для строки " + str(n) + " новое значение в банке " + str(v)
+                )
 
-        self.report_text.insert(0, "Несовпадения сумм:")
-        self.report_text.insert(1, '\n'.join(not_equals))
+        self.report_text.insert(tk.END, "Несовпадения сумм:\n")
+        self.report_text.insert(tk.END, '\n'.join(not_equals))
+        result_values_set = set([value['order'] for value in result.values()])
+        target_values_set = set([value['order'] for value in target.values()])
 
+        self.report_text.insert(tk.END, "\nЕсть в банке, но нет в отчете:\n")
+        self.report_text.insert(tk.END, '\n'.join(
+            target_values_set-result_values_set)
+        )
 
-        # s.write(n, 8, v)
-        # wb.save(self.target.replace('.xls', '1.xls'))
 
 root = tk.Tk()
 app = Application(master=root)
