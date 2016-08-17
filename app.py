@@ -62,8 +62,6 @@ class Application(tk.Frame):
             if type(v['order']) == str and "Рахунок на оплату" in v['order']:
                 result[k] = v
 
-        wb = xlrd.open_workbook(self.target, formatting_info=True)
-
         new_values = {}
         for v in target.values():
             for k, r in result.items():
